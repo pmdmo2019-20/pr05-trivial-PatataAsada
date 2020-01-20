@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/title_mnuAbout"
+        android:id="@+id/mnuAbout"/>
+    <item android:title="@string/title_mnuRules"
+        android:id="@+id/mnuRules"/>
+    <item android:title="@string/title_mnuSettings"
+        android:id="@+id/mnuSettings"/>
+</menu>
