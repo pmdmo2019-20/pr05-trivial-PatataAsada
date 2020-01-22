@@ -15,8 +15,6 @@ class GameWonFragment : Fragment() {
         fun newInstance() = GameWonFragment()
     }
 
-    private lateinit var viewModel: GameWonViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +24,6 @@ class GameWonFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(GameWonViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
