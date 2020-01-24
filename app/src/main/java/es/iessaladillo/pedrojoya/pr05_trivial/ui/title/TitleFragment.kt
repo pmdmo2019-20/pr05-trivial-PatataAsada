@@ -1,17 +1,20 @@
 package es.iessaladillo.pedrojoya.pr05_trivial.ui.title
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game.GameFragment
+import es.iessaladillo.pedrojoya.pr05_trivial.ui.main.MainActivity
+import es.iessaladillo.pedrojoya.pr05_trivial.ui.main.MainViewmodel
 import kotlinx.android.synthetic.main.fragment_title.*
 
 class TitleFragment : Fragment() {
+
+    private lateinit var viewmodel:MainViewmodel
 
     companion object {
         fun newInstance() = TitleFragment()
@@ -26,7 +29,11 @@ class TitleFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
+        viewmodel = requireActivity().run {
+
+            ViewModelProvider(this).get(MainViewmodel::class.java)
+
+        }
         setButton()
     }
     private fun setButton() {
@@ -34,8 +41,8 @@ class TitleFragment : Fragment() {
     }
 
     private fun startGame() {
-        //TODO mover a fragmento game con la configuración de settings activity.
-        //Lo mejor supongo que será crear un único mainViewmodel y manejar los datos por él.
+        viewmodel.movingOutOfTitle()
+        viewmodel.changeTitle(getString(R.string.game_question_title))
         val gameFragment = GameFragment.newInstance()
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fcMain,gameFragment, tag)

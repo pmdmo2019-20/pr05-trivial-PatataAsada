@@ -1,20 +1,27 @@
 package es.iessaladillo.pedrojoya.pr05_trivial.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.about.AboutFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.rules.RulesFragment
+import es.iessaladillo.pedrojoya.pr05_trivial.ui.settings.SettingsActivity
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.title.TitleFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_title.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewmodel
+    public val viewModel: MainViewmodel by viewModels {
+        TasksActivityViewModelFactory(application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,16 +29,39 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setTitleFragment()
         setupObservers()
-        viewModel = ViewModelProviders.of(this).get(MainViewmodel::class.java)
-        /*
-        TODO crear viewmodel para la actividad para observar cambios en los fragmentos y modificar
-        el appbar conforme a ellos.
-         */
-
     }
 
     private fun setupObservers() {
-        //TODO observe viewmodel and change appbar.
+        viewModel.title.observe(this){changeToolbarTitle()}
+        viewModel.inTitle.observe(this){changeToolbar()}
+        //TODO observe viewmodel and change appbar, and game progress.
+    }
+
+    private fun changeToolbar() {
+        if(!viewModel.inTitle.value!!){
+            toolbar.menu.clear()
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+        }
+        else {
+            onCreateOptionsMenu(toolbar.menu)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            supportActionBar?.setDisplayShowHomeEnabled(false)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        viewModel.movingToTitle()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    private fun changeToolbarTitle() {
+        toolbar.title = viewModel.title.value
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,8 +89,9 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun navigateToRules() {
-        //TODO change appbar and remove menu (funcion ejecutada por observador)
         val rulesFragment = RulesFragment.newInstance()
+        viewModel.changeTitle(getString(R.string.rules_title))
+        viewModel.movingOutOfTitle()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fcMain,rulesFragment,rulesFragment.tag)
             .addToBackStack(rulesFragment.tag)
@@ -68,8 +99,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToAbout() {
-        //TODO change appbar and remove menu
         val aboutFragment = AboutFragment.newInstance()
+        viewModel.changeTitle(getString(R.string.about_title))
         supportFragmentManager.beginTransaction()
             .replace(R.id.fcMain,aboutFragment,aboutFragment.tag)
             .addToBackStack(aboutFragment.tag)
@@ -77,7 +108,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToSettings() {
-        //TODO intent para actividad settings
+        val intent = Intent(this,SettingsActivity::class.java)
+        startActivity(intent)
     }
 
 
