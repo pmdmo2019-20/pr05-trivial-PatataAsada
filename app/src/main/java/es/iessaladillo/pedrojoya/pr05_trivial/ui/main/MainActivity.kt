@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.about.AboutFragment
-import es.iessaladillo.pedrojoya.pr05_trivial.ui.dialogs.ConfirmationDialogFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game_over.GameOverFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game_won.GameWonFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.rules.RulesFragment
@@ -20,9 +19,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    val titleFragment = TitleFragment.newInstance()
+    private val titleFragment = TitleFragment.newInstance()
 
-    val viewModel: MainViewmodel by viewModels {
+    private val viewModel: MainViewmodel by viewModels {
         TasksActivityViewModelFactory(application)
     }
 
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveToGameWon() {
-        if(viewModel.checkCompleted()) {
+        if (viewModel.checkCompleted()) {
             val gameWonFragment = GameWonFragment.newInstance()
             changeTitle(getString(R.string.app_name))
             supportFragmentManager.beginTransaction()
@@ -84,16 +83,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(viewModel.rematch){
+        if (viewModel.rematch) {
             super.onBackPressed()
             viewModel.resetGameData()
-        }else{
-            if(supportFragmentManager.backStackEntryCount>1){
+        } else {
+            if (supportFragmentManager.backStackEntryCount > 1) {
 
                 for (i in supportFragmentManager.backStackEntryCount - 1 downTo 1) {
                     supportFragmentManager.popBackStack()
                 }
-            }else super.onBackPressed()
+            } else super.onBackPressed()
             viewModel.movingToTitle()
             viewModel.resetGameData()
             toolbar.title = getString(R.string.app_name)
@@ -175,14 +174,6 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fcMain, titleFragment, titleFragment.tag)
             .addToBackStack(titleFragment.tag)
             .commit()
-    }
-
-    private fun showConfirmationDialog() {
-
-        ConfirmationDialogFragment()
-
-            .show(supportFragmentManager, "ConfirmationDialog")
-
     }
 
 }

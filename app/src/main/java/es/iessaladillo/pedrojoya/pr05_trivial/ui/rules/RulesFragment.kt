@@ -1,12 +1,10 @@
 package es.iessaladillo.pedrojoya.pr05_trivial.ui.rules
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 
 class RulesFragment : Fragment() {
@@ -20,11 +18,6 @@ class RulesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_rules, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
     }
 
 }

@@ -19,10 +19,10 @@
 
     <SeekBarPreference
         android:max="10"
-        app:min="1"
         app:defaultValue="true"
-        app:showSeekBarValue="true"
         app:key="number_of_questions"
+        app:min="1"
+        app:showSeekBarValue="true"
         app:title="@string/number_of_questions_title"
         app:useSimpleSummaryProvider="true" />
 

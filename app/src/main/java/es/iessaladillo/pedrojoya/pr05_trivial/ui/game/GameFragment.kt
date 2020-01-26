@@ -42,14 +42,14 @@ class GameFragment : Fragment() {
     }
 
     private fun checkAnswer() {
-        if(rgAnswers.checkedRadioButtonId != -1){
+        if (rgAnswers.checkedRadioButtonId != -1) {
             val radioButtonID: Int = rgAnswers.checkedRadioButtonId
             val radioButton: View = rgAnswers.findViewById(radioButtonID)
             val idx: Int = rgAnswers.indexOfChild(radioButton)
 
             val r = rgAnswers.getChildAt(idx) as RadioButton
             val selectedtext = r.text.toString()
-            if(!viewmodel.checkWrong(selectedtext)) {
+            if (!viewmodel.checkWrong(selectedtext)) {
                 nextQuestion()
             }
         }
@@ -62,7 +62,7 @@ class GameFragment : Fragment() {
 
     private fun changeQuestionAndAnswers() {
         lblQuestion.text = viewmodel.database[viewmodel.progress.value?.minus(1)!!].question
-        var answers = viewmodel.getAnswers()
+        val answers = viewmodel.getAnswers()
 
         rbOption1.text = answers[0]
         rbOption2.text = answers[1]
