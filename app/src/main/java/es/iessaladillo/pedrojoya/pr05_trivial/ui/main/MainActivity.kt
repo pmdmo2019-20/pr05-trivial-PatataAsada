@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.about.AboutFragment
-import es.iessaladillo.pedrojoya.pr05_trivial.ui.game.GameFragment
+import es.iessaladillo.pedrojoya.pr05_trivial.ui.dialogs.ConfirmationDialogFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game_over.GameOverFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game_won.GameWonFragment
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.rules.RulesFragment
@@ -17,7 +17,10 @@ import es.iessaladillo.pedrojoya.pr05_trivial.ui.settings.SettingsActivity
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.title.TitleFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity() {
+
+    val titleFragment = TitleFragment.newInstance()
 
     val viewModel: MainViewmodel by viewModels {
         TasksActivityViewModelFactory(application)
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupObservers() {
         viewModel.title.observe(this) { changeToolbarTitle(false) }
         viewModel.inTitle.observe(this) { changeToolbar() }
-        viewModel.progress.observe(this) { changeToolbarTitle(true) }
+        viewModel.progress.observe(this) { moveToGameWon() }
         viewModel.gameOver.observe(this) { finishedGame() }
         viewModel.gameWon.observe(this) { finishedGame() }
     }
@@ -58,12 +61,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveToGameWon() {
-        val gameWonFragment = GameWonFragment.newInstance()
-        changeTitle(getString(R.string.app_name))
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fcMain, gameWonFragment, gameWonFragment.tag)
-            .addToBackStack(gameWonFragment.tag)
-            .commit()
+        if(viewModel.checkCompleted()) {
+            val gameWonFragment = GameWonFragment.newInstance()
+            changeTitle(getString(R.string.app_name))
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fcMain, gameWonFragment, gameWonFragment.tag)
+                .addToBackStack(gameWonFragment.tag)
+                .commit()
+        }
     }
 
     private fun changeToolbar() {
@@ -79,9 +84,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        viewModel.movingToTitle()
-        toolbar.title = getString(R.string.app_name)
+        if(viewModel.rematch){
+            super.onBackPressed()
+            viewModel.resetGameData()
+        }else{
+            if(supportFragmentManager.backStackEntryCount>1){
+
+                for (i in supportFragmentManager.backStackEntryCount - 1 downTo 1) {
+                    supportFragmentManager.popBackStack()
+                }
+            }else super.onBackPressed()
+            viewModel.movingToTitle()
+            viewModel.resetGameData()
+            toolbar.title = getString(R.string.app_name)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -155,11 +171,18 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setTitleFragment() {
-        val titleFragment = TitleFragment.newInstance()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fcMain, titleFragment, titleFragment.tag)
             .addToBackStack(titleFragment.tag)
             .commit()
+    }
+
+    private fun showConfirmationDialog() {
+
+        ConfirmationDialogFragment()
+
+            .show(supportFragmentManager, "ConfirmationDialog")
+
     }
 
 }

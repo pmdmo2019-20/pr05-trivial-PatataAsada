@@ -10,13 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import es.iessaladillo.pedrojoya.pr05_trivial.R
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.game.GameFragment
-import es.iessaladillo.pedrojoya.pr05_trivial.ui.main.MainActivity
 import es.iessaladillo.pedrojoya.pr05_trivial.ui.main.MainViewmodel
 import kotlinx.android.synthetic.main.fragment_title.*
 
 class TitleFragment : Fragment() {
 
-    private lateinit var viewmodel:MainViewmodel
+    private lateinit var viewmodel: MainViewmodel
     private val settings: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
@@ -39,17 +38,24 @@ class TitleFragment : Fragment() {
         }
         setButton()
     }
+
     private fun setButton() {
         btnPlay.setOnClickListener { startGame() }
     }
 
     private fun startGame() {
-        viewmodel.maxQuestions = settings.getInt("number_of_questions",1)
+        viewmodel.maxQuestions = settings.getInt("number_of_questions", 1)
         viewmodel.movingOutOfTitle()
-
+        viewmodel.changeTitle(
+            getString(
+                R.string.game_question_title,
+                viewmodel.progress.value,
+                viewmodel.maxQuestions
+            )
+        )
         val gameFragment = GameFragment.newInstance()
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fcMain,gameFragment, tag)
+            ?.replace(R.id.fcMain, gameFragment, tag)
             ?.addToBackStack(tag)
             ?.commit()
     }
